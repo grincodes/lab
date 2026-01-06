@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: http-depy
+  name: http-depy
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: http-depy
+  strategy: 
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: http-depy
+    spec:
+      containers:
+      - image: httpd
+        name: httpd
+        resources: {}
+status: {}
