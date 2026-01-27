@@ -1,0 +1,9 @@
+Line 1: The quick brown fox jumps over the lazy dog.
+Line 2: Lorem ipsum the dolor sit amet, consectetur adipiscing elit the. Integer nec odio.
+Line 3: Data: 12345, apple, the, "quotes", special#chars!
+Line 4: This line has duplicate words words for the testing global replacement.
+Line 5: Multiple spaces   are present   here.
+Line 6: Newline characters are important.\nLet's add another line.
+Line 7: Paths like /usr/bin/bash are useful the for regex testing.
+Line 8: Emails: test1@example.com, user.name@domain.co.uk,the.jko
+Line 9: End of file line, checking for final line handling.
