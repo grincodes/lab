@@ -162,5 +162,88 @@
       find \! -name "feli*"
     ```
 
+# Compare and manipulate text file
+
+```
+sed [pattern] [path]
+```
+flags
+-n : ignore sed default printing
+-e : for mutiple sed commands
+-i : execute or edit inplace
+patterns 
+/g: substitute all occurences
+/p: prints all occurences
+
+```
+sed "s/old/new/g"
+```
+
+Cut: extract text from file using a delimeter
+```
+cut -d ' ' -f 1 userinfo.txt
+```
+The  -f is called field , the text are broken into delimeters and seperated by fields
+
+Unique: remove repeating lines that are next to each other
+
+```
+ uniq context.txt
+```
+Sort : sort lines of text alphabetically 
+```
+ sort content.txt
+```
+Diff: check differnce between files
+
+```
+diff file file2
+```
+```
+diff -y file file2
+```
+
+# Pager and Vim text editor
+
+less content.txt
+more content.txt
+Vim commands
+h: cursor left
+j: cursor down
+k: cursor up
+l: cursor right
+^: first character on the line
+$: last character on the line
+Ctr o + ^ : first character of the line in insert mode.
+This temporarily switches to normal mode for one command ($) 
+Ctr o + $ : last character of the line in insert mode.
+This temporarily switches to normal mode for one command ($) 
+
+# Search for text with Grep
+
+Grep [pattern] [filepath]
+flags
+-i : ignorecase
+--color: color match
+-wi: match word
+-vi: return all text that doesn't match pattern
+-r: recursively search all files in a folder for match
+-ri: group recursive and ignorecase flag 
+-oi: returns only matching pattern/text
+
+# Analyze text using regular expression
+regex expressions
+^: line begins with
+$: line ends with
+.: match any one character
+*: match previous elements and more items after
++: match previous element 1 or more items 
+{min num of repetiton, maximum num of repetition}: previous element can exist "this many times"
+?: make the previous element optional
+|: match one thing or the other thing
+[]: ranges or set [a-z][akol]
+():sub expressions
+[^]: negate ranges or set
+
 
 
