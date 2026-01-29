@@ -231,19 +231,83 @@ flags
 -ri: group recursive and ignorecase flag 
 -oi: returns only matching pattern/text
 
+
 # Analyze text using regular expression
 regex expressions
-^: line begins with
-$: line ends with
-.: match any one character
-*: match previous elements and more items after
-+: match previous element 1 or more items 
-{min num of repetiton, maximum num of repetition}: previous element can exist "this many times"
-?: make the previous element optional
-|: match one thing or the other thing
-[]: ranges or set [a-z][akol]
-():sub expressions
-[^]: negate ranges or set
+- ^: line begins with
+- $: line ends with
+- .: match any one character
+- *: match previous elements and more items after
+- +: match previous element 1 or more items 
+- {min num of repetiton, maximum num of repetition}: previous element can exist "this many times"
+- ?: make the previous element optional
+- |: match one thing or the other thing
+- []: ranges or set [a-z][akol]
+- ():sub expressions
+- [^]: negate ranges or set.
+
+
+# Archive,Backup,Compress and Uncompress
+
+  Archive:
+  Tar (Tape archive) Utility
+
+ - List files in an archive
+  ``` tar --list --file archive.tar || tar -tf archive.tar || tar tf archive.tar ```
+
+ - Create archive
+  ``` tar --create --file archive.tar file1/directory || tar cf archive.tar file1/directory  ```
+
+ - Append file to archive
+  ``` tar --append --file archive.tar file2 || tar rf archive.tar file 2```
+
+ - Extract archive
+  ``` tar --extract --file archive.tar || tar xf archive.tar```
+ - Extract archive to another directory
+   ``` tar --extract --file archive.tar --directory /tmp/ || tar xf archive.tar -C /tmp/```
+ - Archive and Compress
+  ``` tar --create gzip --file archive.tar.gz file1 || tar czf archive.tar.gz file1  ```
+ - Archive with auto compression
+  ``` tar --create --autocompress --file archive.tar.gz file1 || tar caf archive.tar.gz``` 
+
+  
+# Compress and Decompress
+   gzip,bzip,xz
+  
+    gzip Utility
+  - Compress
+   ```gzip  file -> file.gzip```
+
+      keep original file after zip
+   ```gzip --keep  file -> file.gzip```
+    
+  - Decompress 
+    ```gunzip file.gzip```
+
+    zip Utility
+    ```  zip archive file ```
+    ``` zip -r archive.zip Pictures/ ```
+
+    ``` unzip archive.zip ``` 
+
+# Backup Files to Remote
+   resync
+
+  - Local to Remote
+   ``` resync -a host/directory  user@host:/remote/direcory ```
+  
+  - Remote to Local
+    ``` resync -a user@host:/remote/direcory  host/directory ```
+
+# Disk Imaging
+  dd
+
+   ``` sudo dd if=/dev/vda of=diskimage.raw bs=1M status=progress ```
+    if= inputfile
+    of= output file
+    bs= block size
+
+
 
 
 
