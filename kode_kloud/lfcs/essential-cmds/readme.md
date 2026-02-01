@@ -307,7 +307,67 @@ regex expressions
     of= output file
     bs= block size
 
+# Use Input-Output Redirection (e.g. >, >>, |, 2>)
+   > - rewrite to file
+   >> - append to file
+   1> - standard output
+   2> - standard error
+   2>&1 - standard error to (&1) - standard out
 
 
+  Redirecting input 
+   ``` sendemail mail@gmail.com  < input.txt ```
+   Heredoc 
+    ``` 
+    sort << EOF
+    < 2
+    < 4
+    < 1
+    < EOF
+    ```
 
+  Here string
+  ```bc <<<1+2+3```
 
+# Work with SSL Certificates
+  ssl vs tls
+  Tls is a more recent and secured version of ssl used to encrypt http requests and authenticate website
+
+  openssl command supports many cryptographic operations. 
+  The cryptographic operation for ssl is x.509 certs.
+  cert signing request (CSR)
+
+  Generate key and CSR 
+  ```openssl req -newkey rsa:2048 -keyout key.pem -out req.pem```
+
+  Generate self signing tls cert
+  ```openssl req -x509 -noenc -newkey rsa:2048 -days 365 -keyout privatekey.pem -out mycrt.crt```
+
+  Verify and details of a cert
+  ```openssl x509 -in mycrt.crt -text```
+
+# Git basic operations
+ ```
+  git config --global user.name "name"   - configure git global user
+  git config --global user.email "email" -  configure git global user
+  git init - initialize git project
+  git status - check current git status 
+  git reset file - undoing changes and reseting head  
+  git rm file - remove file from staging area
+  git add . - add files to staging area
+  git commit -m "" - commit files changes to local repo 
+
+  git branch nam  - create a branch
+  git branch --delete name - delete a branch
+  git checkout branch - switch to a branch
+  git commit -a -m "commit message"  - add and commit changes
+  git log - check git logs
+  git log --raw. - check git  raw logs
+  git show hash - show changes on hash
+  git merge branch - merge branch
+  git remote -v - check git remote url
+  git remote add origin url - add remote url to repo
+  git push origin master - git push local to remot 
+  git pull origin master - git pull from remote to local
+  git clone repo -  clone remote repo to local
+  ```
