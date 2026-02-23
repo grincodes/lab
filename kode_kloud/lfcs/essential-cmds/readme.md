@@ -8,7 +8,7 @@
 - apropos -s 1,8 director - search for director in man doc section 1 and 8 which are majorly for  commands
 - systemctl tab tab (for auto complete or suggestions)
 
-# Driectories (Create,Delete and copy Directory)
+# Directories (Create,Delete and copy Directory)
  - ls -l (list files in directory in long format)
  - ls -a (list all files in directory)
  - ls -alh (list files in human readable format , must be used with l)
@@ -346,7 +346,7 @@ regex expressions
   Verify and details of a cert
   ```openssl x509 -in mycrt.crt -text```
 
-# Git basic operations
+# Git basic operations | Git staging and commiting changes | Git branches and remote repositories
  ```
   git config --global user.name "name"   - configure git global user
   git config --global user.email "email" -  configure git global user
@@ -371,3 +371,311 @@ regex expressions
   git pull origin master - git pull from remote to local
   git clone repo -  clone remote repo to local
   ```
+
+# Boot,Reboot, and Shutdown a System
+  ```
+    systemctl reboot
+    sytemctl poweroff 
+
+    systemctl reboot --force
+    sytemctl poweroff --force
+    systemctl reboot --force--force
+
+    #scheduled reboot or shutdown
+    sudo shutdown 02:00 <24hrs time>
+    sudo shutdown +15 (shutdown in 15 mins)
+    #reboot -r
+    sudo shutdown -r 02:00 <24hrs time>
+    sudo shutdown -r +15 (shutdown in 15 mins)
+
+    # add wall message for users
+       sudo shutdown -r +15 'Scheduled restart to upgrade our linux kernel' 
+
+  ```
+
+  # Boot or  change system into different modes
+  ```
+   # to get boot target
+    systemctl get-default
+
+    systemctl set-default multi-user.target
+    systemctl isolate graphical.target
+    
+    #other targets 
+    - emergency.target
+    - rescue.target'
+  ```
+
+  # Using scripting to automate system maintenance tasks
+    ```
+      #!/bin/bash
+      
+      date >> /tmp/script.log
+      cat /proc/version >> /tmp/dcript.log
+    ```
+
+    ```
+      #!/bin/bash
+
+      if test -f /tmp/archive.tar.gz ;then
+          mv  /tmp/archive.tar.gz /tmp/archive.tar.gz.OLD
+          tar acf /tmp/archive.tar.gz /tmp/apt
+
+      else
+         tar acf /tmp/archive.tar.gz /tmp/apt
+      
+      fi
+
+    ```
+
+    ```
+      #!/bin/bash
+
+      if grep -q '5' /etc/default/grub; then
+        echo 'Grub has timeout of 5 seconds.'
+      else
+        echo 'Grub DOES NOT have a timeout of 5 seconds.'
+      fi
+    ```
+    ```
+      more scripts examples on /etc/cron.monthly/0anacron
+    ```
+# Manage startup process and services
+
+  - intitalization system (systemd) - system initialization and monitoring
+  - systemd  units
+     - service,socket,device,timer
+  - systemd services cmds
+    - sudo systemctl edit --full ssh.service
+    - sudo systemctl revert ssh.service
+    - sudo systemctl stop ssh.service
+    - sudo systemctl start ssh.service
+    - sudo systemctl restart ssh.service
+    - sudo systemctl enable ssh.service
+    - sudo systemctl enable --now ssh.service
+    - sudo sytemctl is-enabled <service>
+    - man systemd.service
+
+# Create systemd services
+  ```
+    #!/bin/bash
+    echo  "My App Started" | systemd-cat -t MyApp -p info # -p is log priority
+    sleep 5
+    echo  "My App Crashed" | systemd-cat -t MyApp -p err 
+
+  ```
+  app.service
+  ```
+    [Unit]
+     Description=My Application
+     After=network.target auditd.service
+
+    [Service]
+    ExecStartPre=echo "systemd is prepating to start MyApp"
+    ExecStart=/usr/local/bin/myapp.sh
+    KillMode=service #control-group is another option
+    Restart=always 
+    RestartSec=1
+    Type=simple #notify | oneshot
+
+    [Install]
+    WantedBy=multi-user.target
+  ```
+
+  when service files are add or updated we need to reload the systemd with this command
+  ```
+    sudo systemctl daemon-reload
+  ```
+  ``` sudo journalctl -f ``` system logs on follow mode
+
+# Diagnose and manage process
+ - ps -a | ps a
+ - ps aux
+ - top 
+ - ps <PID>
+ - ps u <PID>
+ - ps u -U <username>
+ - pgrep -a syslog
+  **N/B**
+   ```
+    Nice is a command used run a program with a modified scheduling priority
+   ```
+ - nice -n <nicevalue> <command>
+ - ps l
+ - ps lax
+ - ps fax
+ - ps faux
+ - renice <oldnicevalue> <newniceness>
+ **N/B**
+   ```Kill is a linux command that sends signals to a process
+    It does not always "kill" a process.
+    Process signals are signals sent to a process to notify them about a (user/system) event 
+   ```
+ - kill -L
+ - sudo kill -SIGHUP <PID> (SIGHUP is a)
+ -  background , foregrounds and pause
+    **Background**
+    To run a command in the background add the & after it
+    ``` sleep 180 & ```
+    To check background jobs use ```jobs``` command
+
+    ```bg 1 ``` resume background job
+    **Pause**
+    To pause a program use ``` Ctrl + v ```
+    ***Foreground**
+    TO bring program to foreground use ``` fg 1```
+
+    ***N/B**
+    ``` A program is a passive, static set of instructions stored on a disk (e.g., an .exe file), while a process is an active, dynamic instance of that program currently executing in memory. ```
+
+    List files or directories a process is using
+    ```lsof -p <pid> 
+        -u	List files opened by a specific user.	lsof -u username
+        -p	List files opened by a specific process ID (PID).	lsof -p 1234
+        -c	List files opened by a specific command/process name.	lsof -c ssh
+        -i	Display network-related information (sockets and ports).	lsof -i
+        +D	Recursively list all files opened under a specific directory.	lsof +D /var/log
+    ```
+
+  # Locate and Analyse system log files in linux
+   - rsyslog (rocket fast system for log processing) - it stores all logs in  /var/log/ folder
+      search logs through normal serach utility commands
+        ```
+          grep -r 'ssh' /var/log/
+          less /var/log/auth.log
+        ```
+  - folowing logs with 
+      ```
+        tail -f /var/log/auth.log
+      ```
+  - journalctl
+      ```
+          # Filter logs generated from a specific command
+            which sudo -> gets command bin path
+            journalctl /usr/bin/sudo
+
+          # get logs from service unit
+            journalctl -u ssh.service
+
+          # get all logs
+            journactl
+
+          # follow mode 
+            journalctl -f
+
+          # filter logs bash on error priority
+            journalctl -p err|info|warning|crit
+            journalctl -p err -g '^b' #with grep option
+          
+          # get logs based on time
+            journalctl -S 02:00 # time is based on 24hrs
+            journalctl -S 02:00 -U 02:00 # time based on range
+            journalctl -S '2025-03-03 01:00:30' # based on datetime string
+          
+          # get logs since last boot
+            journalctl -b 0
+            journalctl -b -1
+             
+      ```
+
+  - last & lastlog
+       ``` last #command to get user sessions 
+            last log # command to get when users last logged in
+       ```
+
+  # Schedule Tasks to Run at a Set Date and Time
+    cron, anacron, at -> utilities to schedule jobs
+
+    cat /etc/crontab #example of cron jobs
+
+    cron expression has 5 options
+    Minutes,Hour,Day of month, Month, Day of week (Misses Job when switched off)
+
+    Anacron
+    Day, Few Days,Week,Month, Year (Doesnt miss job)
+
+    At - For task that should only run once
+
+    Cron 
+    * - matches all possible value
+    , - multiple values
+    - -> to define range of values
+    / - specifies steps
+
+    crontab -e
+    35 6 * * * /usr/bin/touch test_passes 
+    ***N/B cron uses full command path like /usr/bin/touch***
+    www.crontab.guru to practice cron
+
+    crontab -l # list cron table
+    sudo crontab -e -u jane # edit crontab of user
+
+
+    special directory to run jobs
+    /etc/cron.daily
+     /etc/cron.weekly
+      /etc/cron.hourly
+       /etc/cron.mpnthly
+
+      ***N/B dont use any extension for sheel script used in cron ***
+
+      sudo vim /etc/anacron
+
+      at '15:00'
+      atq -c
+ 
+  # Managing software with package manager  
+
+    - apt update
+    - apt upgrade
+    - apt install
+    - dpkg --listfiles nginx
+    - apt show 
+    - apt search --names-onyl nginx
+    - apt remove
+    - apt autoremove nginx remove module with all dependencies
+
+  # Configure the Repositories of Package Manager
+    - vim /etc/apt/sources.list # local storage of list of repositories
+    - gpg --dearmor key
+
+  # Install Software by compiling source code
+    - sudo make
+    - sudo mmake install
+  
+  # Verify Integrity and Availability of Resources and Processes
+    - df -h # disk filesystem
+    - du -sh /usr/ # disk usage to check disk usage of files and directory
+    -  free -h 
+    - uptime
+    - lscpu
+    - lscpi
+    - xfs_repair -v /dev/vdb1
+    - sudo fsck.ext4 -v -f -p /dev/vdb1
+    - systemctl --list-dependencies
+
+  # Change Kernel Runtime Parameters, Persistent and Non-Persistent
+    - sysctl -a
+    - ls /etc/sysctl.d #where configs are listed
+    - sudo sysctl -p /etc/sysctl.d/swap-less.conf # apply changes immediately
+
+  # List and identify SELinux file
+    - ls -z
+    - ps -z
+    -  getenforce
+  
+  # Create and Enforce MAC Using SELinux
+    apparmor.service
+    selinux.basics auditd
+    sestatus
+    selinux-active
+    grub #bootloader
+    audit2why --all | less
+    ps -ez | grep ssh_t
+    sentenforce 1
+    sudo audit2allow --all -M mymodule
+    semodule -i mymodule.pp
+
+
+
+
