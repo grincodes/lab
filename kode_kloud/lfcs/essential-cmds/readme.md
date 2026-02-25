@@ -662,7 +662,8 @@ regex expressions
   # List and identify SELinux file
     - ls -z
     - ps -z
-    -  getenforce
+    - getenforce
+    - ps auxZ | grep sshd > /home/bob/sshd
   
   # Create and Enforce MAC Using SELinux
     apparmor.service
@@ -673,8 +674,71 @@ regex expressions
     audit2why --all | less
     ps -ez | grep ssh_t
     sentenforce 1
+    getenforce
     sudo audit2allow --all -M mymodule
     semodule -i mymodule.pp
+    sysctl -w net.ipv6.conf.lo.seg6_enabled=1
+    chcon -t httpd_sys_content_t /var/index.html (change selinux context)
+  
+  # Create and manage containers
+    - docker search <image>
+    - docker pull image
+    - docker images
+    - docker rmi <image>
+    - docker run <image>
+    - docker run --detach --publish 8080:80 --name webserver nginx
+    - docker ps -a
+    - docker start containerId
+    - docker stop containerid
+    - docker rm <container>
+    - docker run --detach --publish 8080:80 --name webserver --restart always nginx
+    - docker build -t custom-nginx:1.0 custom-nginx/docker
+
+  # Manage and Configure Virtual Machines
+    QEMU - Quick Emulator
+    KVM -  Kernel based virtual machine
+    VIRSH - command line tool for managing virtual machines
+    - sudo apt install virt-manager
+    - sudo vim testmachine.xml
+        ```
+            <domain type="qemu">
+                <name> TestMachine </name>
+                <memory unit="Gib" > 1</memory>
+                <vcpu>1<vcpu>
+
+                <os>
+                    <type arch="x86_64">hvm</type>
+                </os>
+            </domain>
+        ```
+      - virsh define testmachine.xml
+      - virsh list | virsh list --all
+      - virsh start TestMachine
+      - virsh reboot TestMachine
+      - virsh reset TestMachine
+      - virsh shutdown TestMachine
+      - virsh destroy TestMachine
+      - virsh undefine TestMachine | virsh undefine --remove-storage TestMachine
+      - virsh autostart TestMachine
+      - virsh autostart --disable TestMachine
+      - virsh setvcpus TestMachine 2 --config| virsh setvcpus TestMachine 2 --config --maximum
+      - virsh setmem
+
+    # Create and Boot Virtual Machines
+      create and boot virtual machine with cloud images
+    
+
+    # Installing an Operating System on a Virtual Machine
+      create and boot virtual machine from disk or external drive
+      wget <cloud-image-url>
+      qemu-img info image.img
+      qemu-img resize image.img 10G
+      ls /var/lib/libvirt
+      virt-install --osinfo <os-name> --name ubuntu1 --memory 3072 --vcpus 1 --import --disk /var/libvirt/mages/ubuntu-24.04-install.img --graphic none
+      ctr + ] to exit from virtual machine
+      sudo apt install libguestfs-tools "to set login on virtual machine"
+      sudo virt-customize -a <image-path> --root-password password:password124
+      virsh start
 
 
 
